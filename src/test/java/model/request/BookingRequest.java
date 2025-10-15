@@ -1,48 +1,53 @@
 package model.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import model.BookingDates;
 
 public class BookingRequest {
-    private String roomid;
-    private String firstname;
-    private String lastname;
+    @JsonProperty("roomid")
+    private int roomId;
+    @JsonProperty("firstname")
+    private String firstName;
+    @JsonProperty("lastname")
+    private String lastName;
     private String email;
     private String phone;
-    private BookingDates bookingdates;
+    @JsonProperty("bookingdates")
+    private BookingDates bookingDates;
 
-    public BookingRequest(String roomid, String firstname,
-                          String lastname, String email,
-                          String phone, BookingDates bookingdates) {
-        this.roomid = roomid;
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public BookingRequest(int roomId, String firstName,
+                          String lastName, String email,
+                          String phone, BookingDates bookingDates) {
+        this.roomId = roomId;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.phone = phone;
-        this.bookingdates = bookingdates;
+        this.bookingDates = bookingDates;
     }
 
-    public String getRoomid() {
-        return roomid;
+    public int getRoomId() {
+        return roomId;
     }
 
-    public void setRoomid(String roomid) {
-        this.roomid = roomid;
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -61,12 +66,12 @@ public class BookingRequest {
         this.phone = phone;
     }
 
-    public BookingDates getBookingdates() {
-        return bookingdates;
+    public BookingDates getBookingDates() {
+        return bookingDates;
     }
 
-    public void setBookingdates(BookingDates bookingdates) {
-        this.bookingdates = bookingdates;
+    public void setBookingDates(BookingDates bookingDates) {
+        this.bookingDates = bookingDates;
     }
 
 }

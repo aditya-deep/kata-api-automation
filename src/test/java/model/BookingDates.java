@@ -1,29 +1,33 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class BookingDates {
-    private String checkin;
-    private String checkout;
+    @JsonProperty("checkin")
+    private String checkIn;
+    @JsonProperty("checkout")
+    private String checkOut;
 
     public BookingDates() {}
 
-    public BookingDates(String checkin, String checkout) {
-        this.checkin = checkin;
-        this.checkout = checkout;
+    public BookingDates(String checkIn, String checkOut) {
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
     }
 
-    public String getCheckin() {
-        return checkin;
+    public String getCheckIn() {
+        return checkIn;
     }
 
-    public void setCheckin(String checkin) {
-        this.checkin = checkin;
+    public void setCheckIn(String checkIn) {
+        this.checkIn = checkIn;
     }
 
-    public String getCheckout() {
-        return checkout;
+    public String getCheckOut() {
+        return checkOut;
     }
 
-    public void setCheckout(String checkout) {
-        this.checkout = checkout;
+    public void setCheckOut(String checkOut) {
+        this.checkOut = checkOut;
     }
 }
