@@ -44,11 +44,6 @@ public class BookingSteps {
         responseValidator.validateSuccessfulPost(response, dataTable);
     }
 
-    @Given("user tries to book a room with invalid input data")
-    public void userTriesToBookARoomWithInvalidInputDetails(DataTable dataTable) {
-        bookingRequest = prepareBookingRequest(dataTable);
-    }
-
     @When("user submits a booking request")
     public void userSubmitsABookingRequest() {
         response = bookingClient.createBooking(bookingRequest);
@@ -60,7 +55,7 @@ public class BookingSteps {
         assertThat(actualStatusCode).isEqualTo(expectedStatusCode);
     }
 
-    @And("the error response should contain appropriate error messages")
+    @And("the error response should contain following error messages")
     public void theErrorResponseShouldContainAppropriateErrorMessages(DataTable dataTable) {
         validateErrorResponse400(response, dataTable);
     }
@@ -68,18 +63,26 @@ public class BookingSteps {
     //reusable method to prepare booking request
     private BookingRequest prepareBookingRequest(DataTable dataTable) {
         Map<String, String> data = dataTable.asMaps().get(0);
+
         BookingDates bookingDates = new BookingDates();
-        bookingDates.setCheckIn(data.get("checkIn"));
-        bookingDates.setCheckOut(data.get("checkOut"));
+        bookingDates.setCheckIn(getValue(data, "checkIn"));
+        bookingDates.setCheckOut(getValue(data, "checkOut"));
 
         return new BookingRequest(
-                Integer.parseInt(data.get("roomId")),
-                data.get("firstName"),
-                data.get("lastName"),
-                data.get("email"),
-                data.get("phone"),
+                getValue(data, "roomId"),
+                getValue(data, "firstName"),
+                getValue(data, "lastName"),
+                getValue(data, "email"),
+                getValue(data, "phone"),
                 bookingDates
         );
     }
 
+    private String getValue(Map<String, String> data, String key) {
+        String value = data.get(key);
+        if (value == null || value.trim().equalsIgnoreCase("empty")) {
+            return "";
+        }
+        return value.trim();
+    }
 }

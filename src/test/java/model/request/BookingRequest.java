@@ -5,7 +5,7 @@ import model.BookingDates;
 
 public class BookingRequest {
     @JsonProperty("roomid")
-    private int roomId;
+    private String roomId;
     @JsonProperty("firstname")
     private String firstName;
     @JsonProperty("lastname")
@@ -15,7 +15,7 @@ public class BookingRequest {
     @JsonProperty("bookingdates")
     private BookingDates bookingDates;
 
-    public BookingRequest(int roomId, String firstName,
+    public BookingRequest(String roomId, String firstName,
                           String lastName, String email,
                           String phone, BookingDates bookingDates) {
         this.roomId = roomId;
@@ -26,11 +26,11 @@ public class BookingRequest {
         this.bookingDates = bookingDates;
     }
 
-    public int getRoomId() {
+    public String getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(int roomId) {
+    public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
 

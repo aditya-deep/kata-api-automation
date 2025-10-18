@@ -46,9 +46,14 @@ public class ResponseValidator {
         Map<String, String> expectedResponseParams = dataTable.asMaps().get(0);
         List<String> actualErrors = response.jsonPath().getList("errors");
         String expectedError = expectedResponseParams.get("errors");
-        assertThat(actualErrors)
-                .as("Expected error message not found: " + expectedError)
-                .contains(expectedError);
+        if(expectedError.contains(","))
+        {
+            String[] expectedErrorsArray = expectedError.split(",");
+            assertThat(actualErrors).containsExactlyInAnyOrder(expectedErrorsArray);
+        } else{
+            assertThat(actualErrors)
+                    .as("Expected error message: " + expectedError)
+                    .contains(expectedError);
+        }
     }
-
 }
