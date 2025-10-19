@@ -34,7 +34,6 @@ To view the report, open the file in a web browser.
     `target/cucumber-html-reports/overview-features.html`
 3. Sample Report Screenshot:
 ![img.png](img.png)
-![img_1.png](img_1.png)
 
 The report includes:
 Summary of scenarios passed/failed

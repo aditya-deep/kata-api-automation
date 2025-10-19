@@ -16,19 +16,19 @@ public class ResponseValidator {
         Map<String, String> data = dataTable.asMaps().get(0);
         BookingResponse bookingResponse = response.as(BookingResponse.class);
         assertThat(bookingResponse.getBookingId()).isGreaterThan(0);
-        if(data.get("roomId") != null) {
+        if (data.get("roomId") != null) {
             assertThat(bookingResponse.getRoomId()).isEqualTo(Integer.parseInt(data.get("roomId")));
         }
-        if(data.get("firstName") != null) {
+        if (data.get("firstName") != null) {
             assertThat(bookingResponse.getFirstName()).isEqualTo(data.get("firstName"));
         }
-        if(data.get("lastName") != null) {
+        if (data.get("lastName") != null) {
             assertThat(bookingResponse.getLastName()).isEqualTo(data.get("lastName"));
         }
-        if(data.get("email") != null) {
+        if (data.get("email") != null) {
             assertThat(bookingResponse.getEmail()).isEqualTo(data.get("email"));
         }
-        if(data.get("phone") != null) {
+        if (data.get("phone") != null) {
             assertThat(bookingResponse.getPhone()).isEqualTo(data.get("phone"));
         }
         if (data.get("depositPaid") != null) {
@@ -46,14 +46,23 @@ public class ResponseValidator {
         Map<String, String> expectedResponseParams = dataTable.asMaps().get(0);
         List<String> actualErrors = response.jsonPath().getList("errors");
         String expectedError = expectedResponseParams.get("errors");
-        if(expectedError.contains(","))
-        {
+        if (expectedError.contains(",")) {
             String[] expectedErrorsArray = expectedError.split(",");
             assertThat(actualErrors).containsExactlyInAnyOrder(expectedErrorsArray);
-        } else{
+        } else {
             assertThat(actualErrors)
                     .as("Expected error message: " + expectedError)
                     .contains(expectedError);
         }
     }
+
+    public static void validateErrorResponse409(Response response, DataTable dataTable) {
+        Map<String, String> expectedResponseParams = dataTable.asMaps().get(0);
+        String actualError = response.jsonPath().getString("error");
+        String expectedError = expectedResponseParams.get("error");
+        assertThat(actualError)
+                .as("Expected error message: " + expectedError)
+                .isEqualTo(expectedError);
+    }
+
 }

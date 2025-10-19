@@ -16,7 +16,7 @@ Feature: Booking API tests
       | 2      | Alice     | Lee      | 2025-10-24 | 2025-10-25 |
 
   @positive
-  Scenario Outline: Successful room booking with all fields
+  Scenario Outline: Successful booking when all fields are provided
     Given user wants to book a room with following details
       | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   |
       | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> |
@@ -31,93 +31,110 @@ Feature: Booking API tests
       | 1      | Sarah     | Wick     | sarah_wick@gmail.com | +49612234892 | 2025-10-30 | 2025-10-31 |
 
   @negative
-  Scenario Outline: User tries to book with missing dates, past dates and invalid date format
+  Scenario Outline: Booking fails when user tries with missing, past or invalid dates format
     Given user wants to book a room with following details
       | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   |
       | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> |
     When user submits a booking request
-    Then the booking request should fail with status code <statusCode>
+    Then the booking request should fail with status code 400
     And the error response should contain following error messages
-      | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   | errors   |
-      | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> | <errors> |
+      | errors   |
+      | <errors> |
     Examples:
-      | roomId | firstName | lastName | email                 | phone        | checkIn    | checkOut   | statusCode | errors                            |
-      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 |            |            | 400        | must not be null,must not be null |
-      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 |            | 2025-10-20 | 400        | must not be null                  |
-      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 | 2025-10-20 |            | 400        | must not be null                  |
-      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 | 2025/10/26 | 2025/10/28 | 400        | Failed to create booking          |
+      | roomId | firstName | lastName | email                 | phone        | checkIn     | checkOut    | errors                            |
+      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 |             |             | must not be null,must not be null |
+      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 |             | 2025-10-20  | must not be null                  |
+      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 | 2025-10-20  |             | must not be null                  |
+      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 | 2025/10/26  | 2025/10/28  | Failed to create booking          |
+      | 2      | James     | Smith    | james_smith@gmail.com | 049612234890 | 2025-Nov-27 | 2025-Nov-27 | Failed to create booking          |
+
 
   @negative
-  Scenario Outline: User tries to book with invalid room id
+  Scenario Outline: Booking fails when user tries to book with invalid room ID
     Given user wants to book a room with following details
       | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   |
       | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> |
     When user submits a booking request
-    Then the booking request should fail with status code <statusCode>
+    Then the booking request should fail with status code 400
     And the error response should contain following error messages
-      | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   | errors   |
-      | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> | <errors> |
+      | errors   |
+      | <errors> |
     Examples:
-      | roomId | firstName | lastName | email           | phone        | checkIn    | checkOut   | statusCode | errors                             |
-      | 0      | James     | Smith    | james@gmail.com | 049612234890 | 2025-10-14 | 2025-10-15 | 400        | must be greater than or equal to 1 |
-      | -10    | James     | Smith    | james@gmail.com | 049612234890 | 2025-10-14 | 2025-10-15 | 400        | must be greater than or equal to 1 |
-      | 1.2    | James     | Smith    | james@gmail.com | 049612234890 | 2025-10-14 | 2025-10-15 | 400        | Failed to create booking           |
-      |        | James     | Smith    | james@gmail.com | 049612234890 | 2025-10-14 | 2025-10-15 | 400        | must be greater than or equal to 1 |
+      | roomId | firstName | lastName | email           | phone        | checkIn    | checkOut   | errors                             |
+      | 0      | James     | Smith    | james@gmail.com | 049612234890 | 2025-10-14 | 2025-10-15 | must be greater than or equal to 1 |
+      | -10    | James     | Smith    | james@gmail.com | 049612234890 | 2025-10-14 | 2025-10-15 | must be greater than or equal to 1 |
+      | 1.2    | James     | Smith    | james@gmail.com | 049612234890 | 2025-10-14 | 2025-10-15 | Failed to create booking           |
+      |        | James     | Smith    | james@gmail.com | 049612234890 | 2025-10-14 | 2025-10-15 | must be greater than or equal to 1 |
 
   @negative
-  Scenario Outline: User tries to book with invalid values for firstname and lastname
+  Scenario Outline: Booking fails when user tries to book with invalid values for firstname and lastname
     Given user wants to book a room with following details
       | roomId   | firstName   | lastName   | checkIn   | checkOut   | email   | phone   |
       | <roomId> | <firstName> | <lastName> | <checkIn> | <checkOut> | <email> | <phone> |
     When user submits a booking request
-    Then the booking request should fail with status code <statusCode>
+    Then the booking request should fail with status code 400
     And the error response should contain following error messages
       | roomId   | firstName   | lastName   | checkIn   | checkOut   | errors   |
       | <roomId> | <firstName> | <lastName> | <checkIn> | <checkOut> | <errors> |
     Examples:
-      | roomId | firstName           | lastName                        | checkIn    | checkOut   | email           | phone        | statusCode | errors                        |
-      | 2      |                     | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | Firstname should not be blank |
-      | 2      | Ja                  | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 18 |
-      | 2      | JamesSmithJamesS_*& | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 18 |
-      | 2      | James               |                                 | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | Lastname should not be blank  |
-      | 2      | James               | Sm                              | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 30 |
-      | 2      | James               | JamesSmithJamesS_*&JamesSmith-! | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 30 |
+      | roomId | firstName           | lastName                        | checkIn    | checkOut   | email           | phone        | errors                        |
+      | 2      |                     | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | Firstname should not be blank |
+      | 2      | Ja                  | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | size must be between 3 and 18 |
+      | 2      | JamesSmithJamesS_*& | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | size must be between 3 and 18 |
+      | 2      | James               |                                 | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | Lastname should not be blank  |
+      | 2      | James               | Sm                              | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | size must be between 3 and 30 |
+      | 2      | James               | JamesSmithJamesS_*&JamesSmith-! | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | size must be between 3 and 30 |
 
   @negative
-  Scenario Outline: User tries to book with invalid email
+  Scenario Outline: Booking fails when user tries to book with invalid email
     Given user wants to book a room with following details
       | roomId   | firstName   | lastName   | email   | checkIn   | checkOut   |
       | <roomId> | <firstName> | <lastName> | <email> | <checkIn> | <checkOut> |
     When user submits a booking request
-    Then the booking request should fail with status code <statusCode>
+    Then the booking request should fail with status code 400
     And the error response should contain following error messages
-      | roomId   | firstName   | lastName   | email   | checkIn   | checkOut   | errors   |
-      | <roomId> | <firstName> | <lastName> | <email> | <checkIn> | <checkOut> | <errors> |
+      | errors   |
+      | <errors> |
     Examples:
-      | roomId | firstName | lastName | email                  | checkIn    | checkOut   | statusCode | errors                              |
-      | 1      | Lee       | Kim      | invalid-email          | 2025-10-14 | 2025-10-25 | 400        | must be a well-formed email address |
-      | 1      | James     | Smith    | james_smith@@gmail.com | 2025-10-16 | 2025-10-25 | 400        | must be a well-formed email address |
+      | roomId | firstName | lastName | email                  | checkIn    | checkOut   | errors                              |
+      | 1      | Lee       | Kim      | invalid-email          | 2025-10-14 | 2025-10-25 | must be a well-formed email address |
+      | 1      | James     | Smith    | james_smith@@gmail.com | 2025-10-16 | 2025-10-25 | must be a well-formed email address |
 
   @negative
-  Scenario Outline: User tries to book with invalid phone number
+  Scenario Outline: Booking fails when user tries to book with invalid phone number
     Given user wants to book a room with following details
       | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   |
       | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> |
     When user submits a booking request
-    Then the booking request should fail with status code <statusCode>
+    Then the booking request should fail with status code 400
     And the error response should contain following error messages
-      | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   | errors   |
-      | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> | <errors> |
+      | errors   |
+      | <errors> |
     Examples:
-      | roomId | firstName            | lastName | phone                  | checkIn    | checkOut   | statusCode | errors                         |
-      | 1      | JamesSmithJamesSmith | Smith    |                        | 2025-10-20 | 2025-10-21 | 400        | size must be between 3 and 18  |
-      | 1      | JamesSmithJamesSmith | Smith    | 0496123489             | 2025-10-20 | 2025-10-21 | 400        | size must be between 11 and 21 |
-      | 1      | JamesSmithJamesSmith | Smith    | 0496123489049612348912 | 2025-10-20 | 2025-10-21 | 400        | size must be between 11 and 21 |
+      | roomId | firstName            | lastName | phone                  | checkIn    | checkOut   | errors                        |
+      | 1      | JamesSmithJamesSmith | Smith    |                        | 2025-10-20 | 2025-10-21 | size must be between 3 and 18 |
+      | 1      | JamesSmithJamesSmith | Smith    | 0496123489             | 2025-10-20 | 2025-10-21 | size must be between 3 and 18 |
+      | 1      | JamesSmithJamesSmith | Smith    | 0496123489049612348912 | 2025-10-20 | 2025-10-21 | size must be between 3 and 18 |
 
   @negative
-  Scenario: User get 404 Not Found when accessing invalid API endpoint
+  Scenario: 404 Not Found when accessing invalid API endpoint
     Given user wants to book a room with following details
       | roomId | firstName | lastName | email                 | phone        | checkIn    | checkOut   |
       | 3      | Kim       | Smith    | james_smith@gmail.com | 049612234890 | 2025-10-29 | 2025-10-30 |
     When user submits a booking request to an invalid endpoint "/bookings"
     Then the booking request should fail with status code 404
+
+  @negative
+  Scenario Outline: 409 Conflict when booking with past, incorrect dates
+    Given user wants to book a room with following details
+      | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   |
+      | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> |
+    When user submits a booking request
+    Then the booking request should fail with status code 409
+    And the error response should contain following error messages
+      | error   |
+      | <error> |
+    Examples:
+      | roomId | firstName | lastName | email                 | phone        | checkIn    | checkOut   | error                    |
+      | 2      | James     | Smith    | james_smith@gmail.com | 049612234890 | 2025-10-27 | 2025-10-27 | Failed to create booking |
+      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 | 2023-11-20 | 2023-11-21 | Failed to create booking |

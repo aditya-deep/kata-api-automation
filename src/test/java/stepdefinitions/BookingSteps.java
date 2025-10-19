@@ -67,7 +67,17 @@ public class BookingSteps {
 
     @And("the error response should contain following error messages")
     public void theErrorResponseShouldContainAppropriateErrorMessages(DataTable dataTable) {
-        validateErrorResponse400(response, dataTable);
+        int statusCode = response.getStatusCode();
+        switch (statusCode) {
+            case 400:
+                validateErrorResponse400(response, dataTable);
+                break;
+            case 409:
+                validateErrorResponse409(response, dataTable);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported status code for error validation: " + statusCode);
+        }
     }
 
     //reusable method to prepare booking request

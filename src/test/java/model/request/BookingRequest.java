@@ -17,6 +17,8 @@ public class BookingRequest {
     @JsonProperty("bookingdates")
     private BookingDates bookingDates;
 
+    public BookingRequest() {}
+
     public String getRoomId() {
         return roomId;
     }
