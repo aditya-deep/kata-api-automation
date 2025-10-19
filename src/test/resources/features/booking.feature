@@ -2,7 +2,7 @@ Feature: Booking API tests
 
   @positive
   Scenario Outline: Successful room booking with only mandatory fields
-    Given user wants to book a room with following details
+    Given user wants to book a room with mandatory details
       | roomId   | firstName   | lastName   | checkIn   | checkOut   |
       | <roomId> | <firstName> | <lastName> | <checkIn> | <checkOut> |
     When they submit a valid booking request
@@ -12,8 +12,8 @@ Feature: Booking API tests
       | <roomId> | <firstName> | <lastName> | <checkIn> | <checkOut> |
     Examples:
       | roomId | firstName | lastName | checkIn    | checkOut   |
-      | 1      | Jon       | Smith    | 2025-11-20 | 2025-10-21 |
-      | 2      | Alice     | Lee      | 2025-11-21 | 2025-11-22 |
+      | 1      | Jon       | Smith    | 2025-10-27 | 2025-10-28 |
+      | 2      | Alice     | Lee      | 2025-10-24 | 2025-10-25 |
 
   @positive
   Scenario Outline: Successful room booking with all fields
@@ -26,12 +26,12 @@ Feature: Booking API tests
       | roomId   | firstName   | lastName   | checkIn   | checkOut   | depositPaid |
       | <roomId> | <firstName> | <lastName> | <checkIn> | <checkOut> | false       |
     Examples:
-      | roomId | firstName | lastName | email                 | phone          | checkIn    | checkOut   |
-      | 1      | Jon       | Smith    | james_smith@gmail.com | 049612234890   | 2025-11-20 | 2025-10-21 |
-      | 2      | Alice     | Lee      | alice@gmail.com       | +4949612234890 | 2025-11-21 | 2025-11-22 |
+      | roomId | firstName | lastName | email                | phone        | checkIn    | checkOut   |
+      | 3      | John      | Wick     | john_wick@gmail.com  | 049612234891 | 2025-10-26 | 2025-10-27 |
+      | 1      | Sarah     | Wick     | sarah_wick@gmail.com | +49612234892 | 2025-10-30 | 2025-10-31 |
 
   @negative
-  Scenario Outline: User tries to book with missing dates and invalid date format
+  Scenario Outline: User tries to book with missing dates, past dates and invalid date format
     Given user wants to book a room with following details
       | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   |
       | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> |
@@ -75,13 +75,13 @@ Feature: Booking API tests
       | roomId   | firstName   | lastName   | checkIn   | checkOut   | errors   |
       | <roomId> | <firstName> | <lastName> | <checkIn> | <checkOut> | <errors> |
     Examples:
-      | roomId | firstName           | lastName                        | checkIn    | checkOut   | email           | phone        | statusCode | errors                                                     |
-      | 2      |                     | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | Firstname should not be blank                              |
-      | 2      | Ja                  | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 18                              |
-      | 2      | JamesSmithJamesS_*& | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 18                              |
-      | 2      | James               |                                 | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | Lastname should not be blank                               |
-      | 2      | James               | Sm                              | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 30                              |
-      | 2      | James               | JamesSmithJamesS_*&JamesSmith-! | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 30                              |
+      | roomId | firstName           | lastName                        | checkIn    | checkOut   | email           | phone        | statusCode | errors                        |
+      | 2      |                     | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | Firstname should not be blank |
+      | 2      | Ja                  | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 18 |
+      | 2      | JamesSmithJamesS_*& | Smith                           | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 18 |
+      | 2      | James               |                                 | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | Lastname should not be blank  |
+      | 2      | James               | Sm                              | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 30 |
+      | 2      | James               | JamesSmithJamesS_*&JamesSmith-! | 2025-10-24 | 2025-10-25 | james@gmail.com | 049612234890 | 400        | size must be between 3 and 30 |
 
   @negative
   Scenario Outline: User tries to book with invalid email
@@ -113,3 +113,11 @@ Feature: Booking API tests
       | 1      | JamesSmithJamesSmith | Smith    |                        | 2025-10-20 | 2025-10-21 | 400        | size must be between 3 and 18  |
       | 1      | JamesSmithJamesSmith | Smith    | 0496123489             | 2025-10-20 | 2025-10-21 | 400        | size must be between 11 and 21 |
       | 1      | JamesSmithJamesSmith | Smith    | 0496123489049612348912 | 2025-10-20 | 2025-10-21 | 400        | size must be between 11 and 21 |
+
+  @negative
+  Scenario: User get 404 Not Found when accessing invalid API endpoint
+    Given user wants to book a room with following details
+      | roomId | firstName | lastName | email                 | phone        | checkIn    | checkOut   |
+      | 3      | Kim       | Smith    | james_smith@gmail.com | 049612234890 | 2025-10-29 | 2025-10-30 |
+    When user submits a booking request to an invalid endpoint "/bookings"
+    Then the booking request should fail with status code 404

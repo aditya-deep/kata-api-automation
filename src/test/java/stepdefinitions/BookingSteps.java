@@ -29,6 +29,11 @@ public class BookingSteps {
         bookingRequest = prepareBookingRequest(dataTable);
     }
 
+    @Given("user wants to book a room with mandatory details")
+    public void userWantsToBookARoomWithMandatoryDetails(DataTable dataTable) {
+        bookingRequest = prepareBookingRequestWithMandatoryFields(dataTable);
+    }
+
     @When("they submit a valid booking request")
     public void theySubmitAValidBookingRequest() {
         response = bookingClient.createBooking(bookingRequest);
@@ -47,6 +52,11 @@ public class BookingSteps {
     @When("user submits a booking request")
     public void userSubmitsABookingRequest() {
         response = bookingClient.createBooking(bookingRequest);
+    }
+
+    @When("user submits a booking request to an invalid endpoint {string}")
+    public void userSubmitsABookingRequestToInvalidEndpoint(String endPoint) {
+        response = bookingClient.createBooking(endPoint, bookingRequest);
     }
 
     @Then("the booking request should fail with status code {int}")
@@ -68,14 +78,32 @@ public class BookingSteps {
         bookingDates.setCheckIn(getValue(data, "checkIn"));
         bookingDates.setCheckOut(getValue(data, "checkOut"));
 
-        return new BookingRequest(
-                getValue(data, "roomId"),
-                getValue(data, "firstName"),
-                getValue(data, "lastName"),
-                getValue(data, "email"),
-                getValue(data, "phone"),
-                bookingDates
-        );
+        BookingRequest bookingRequest = new BookingRequest();
+
+        bookingRequest.setBookingDates(bookingDates);
+        bookingRequest.setRoomId(getValue(data, "roomId"));
+        bookingRequest.setFirstName(getValue(data, "firstName"));
+        bookingRequest.setLastName(getValue(data, "lastName"));
+        bookingRequest.setEmail(getValue(data, "email"));
+        bookingRequest.setPhone(getValue(data, "phone"));
+        return bookingRequest;
+    }
+
+    private BookingRequest prepareBookingRequestWithMandatoryFields(DataTable dataTable) {
+        Map<String, String> data = dataTable.asMaps().get(0);
+
+        BookingDates bookingDates = new BookingDates();
+        bookingDates.setCheckIn(getValue(data, "checkIn"));
+        bookingDates.setCheckOut(getValue(data, "checkOut"));
+
+        BookingRequest bookingRequest = new BookingRequest();
+
+        bookingRequest.setBookingDates(bookingDates);
+        bookingRequest.setRoomId(getValue(data, "roomId"));
+        bookingRequest.setFirstName(getValue(data, "firstName"));
+        bookingRequest.setLastName(getValue(data, "lastName"));
+
+        return bookingRequest;
     }
 
     private String getValue(Map<String, String> data, String key) {

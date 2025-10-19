@@ -21,19 +21,6 @@ public class BookingResponse {
 
     public BookingResponse() {}
 
-    public BookingResponse(int bookingId, int roomId, String firstName,
-                           String lastName, String email,
-                           String phone, boolean depositPaid, BookingDates bookingDates) {
-        this.bookingId = bookingId;
-        this.roomId = roomId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        this.depositPaid = depositPaid;
-        this.bookingDates = bookingDates;
-    }
-
     public int getBookingId() {
         return bookingId;
     }

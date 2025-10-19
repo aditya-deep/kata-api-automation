@@ -1,8 +1,10 @@
 package model.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import model.BookingDates;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingRequest {
     @JsonProperty("roomid")
     private String roomId;
@@ -14,17 +16,6 @@ public class BookingRequest {
     private String phone;
     @JsonProperty("bookingdates")
     private BookingDates bookingDates;
-
-    public BookingRequest(String roomId, String firstName,
-                          String lastName, String email,
-                          String phone, BookingDates bookingDates) {
-        this.roomId = roomId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        this.bookingDates = bookingDates;
-    }
 
     public String getRoomId() {
         return roomId;
