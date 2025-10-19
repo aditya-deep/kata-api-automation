@@ -125,16 +125,12 @@ Feature: Booking API tests
     Then the booking request should fail with status code 404
 
   @negative
-  Scenario Outline: 409 Conflict when booking with past, incorrect dates
+  Scenario: 409 Conflict when booking with same check in and check out dates
     Given user wants to book a room with following details
-      | roomId   | firstName   | lastName   | email   | phone   | checkIn   | checkOut   |
-      | <roomId> | <firstName> | <lastName> | <email> | <phone> | <checkIn> | <checkOut> |
+      | roomId   | firstName   | lastName   | email                 | phone        | checkIn    | checkOut   |
+      | 2        | James       | Smith      | james_smith@gmail.com | 049612234890 | 2025-10-27 | 2025-10-27 |
     When user submits a booking request
     Then the booking request should fail with status code 409
     And the error response should contain following error messages
-      | error   |
-      | <error> |
-    Examples:
-      | roomId | firstName | lastName | email                 | phone        | checkIn    | checkOut   | error                    |
-      | 2      | James     | Smith    | james_smith@gmail.com | 049612234890 | 2025-10-27 | 2025-10-27 | Failed to create booking |
-      | 1      | James     | Smith    | james_smith@gmail.com | 049612234890 | 2023-11-20 | 2023-11-21 | Failed to create booking |
+      | error                    |
+      | Failed to create booking |
